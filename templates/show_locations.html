@@ -1,0 +1,85 @@
+<html>                                                                  
+	<head>                                                                  
+		<script type="text/javascript" src="../static/jquery-1.8.2.min.js"></script>          
+		<script type="text/javascript">                                         
+			$(document).ready(function() {
+				$.ajax({
+				  url: '/location/show/all/',
+				  success: function(data) {
+					createLocationsView(data)
+				  }
+				});
+			})
+			
+			function createLocationsView(data) {
+				for (var i in data.locations){
+					$row = $("<div id=location_" + data.locations[i].location_id + "><tr>");
+					$row.append("<td id=name>" + data.locations[i].name +"</td>");
+					$row.append("<td id=address>" + data.locations[i].address+"</td>");
+					$row.append("<td> <a href=# onclick=createLocation(" + data.locations[i].location_id + ")> Edit </a></td>");
+					$row.append("<td> <a href=# onclick=deleteLocation(" + data.locations[i].location_id + ")> Delete </a></td>");
+					$row.append("</div>");
+					$(".locations").append($row);
+				}
+			}
+
+			function deleteLocation(id) {
+				$.ajax({
+				  url: '/location/remove/' + id + '/',
+				  success: function(data) {
+					$('#location_' + id).remove();
+				  }
+				});
+			}
+
+			function createLocation(id) {
+				operation = id != undefined ? 'update' : 'create';
+				$('.detail_panel').empty();
+				$addressText = $("<input type=text />");
+				$addressText.attr('value', $('#location_'+id+' #address').text());
+				$nameText = $("<input type=text />");
+				$nameText.attr('value', $('#location_'+id+' #name').text());
+				$createButton = $("<input type=button />");
+				$createButton.attr('value', operation);
+				$(".detail_panel").append($addressText);	
+				$(".detail_panel").append($nameText);
+				$(".detail_panel").append($createButton);
+
+				$createButton.click(function() {
+					// validate the name and address
+					if ($nameText.val().length == 0  || $addressText.val().length == 0) {
+						alert("Please fill in missing fields name and address");
+						return;
+					}
+					
+					locationData = {}
+					locationData.user_id = 'vinayjain404'; 
+					locationData.lat = 100; //geocode.lat;
+					locationData.long = 100;//geocode.long;
+					locationData.address = $addressText.val();
+					locationData.name = $nameText.val();
+					locationData.id = id;
+
+					// fetch geo code and validate address provided
+					$.ajax({
+						url: "/location/" + operation +"/",
+						data: locationData,
+						type: 'post',
+						success: function(data) {
+						      window.location.replace("/show_all_locations");
+						}
+					});
+				});
+			}
+		</script>                                                               
+	</head>                                                                 
+	<body>                                                                  
+		<div class="list_panel">
+			<table class="locations">
+			</table>
+			<input type=button value="Add a location" onclick=createLocation() />
+		</div>
+		<div class="detail_panel">
+		</div>
+	</body>                                                                 
+</html>
