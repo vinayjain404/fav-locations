@@ -13,17 +13,37 @@
 			
 			function createLocationsView(data) {
 				for (var i in data.locations){
-					$row = $("<div id=location_" + data.locations[i].location_id + "><tr>");
-					$row.append("<td id=name>" + data.locations[i].name +"</td>");
-					$row.append("<td id=address>" + data.locations[i].address+"</td>");
-					$row.append("<td> <a href=# onclick=createLocation(" + data.locations[i].location_id + ")> Edit </a></td>");
-					$row.append("<td> <a href=# onclick=deleteLocation(" + data.locations[i].location_id + ")> Delete </a></td>");
-					$row.append("</div>");
+					cur_location = data.locations[i];
+					id = cur_location.location_id 
+					$row = $("<div id=location_" + id + "><tr>");
+					$row.append("<td id=name>" + cur_location.name +"</td>");
+					$row.append("<td id=address>" + cur_location.address+"</td>");
+					$row.append("<td id=view> <input type=button value=View /></td>");
+					$row.append("<td id=delete> <input type=button value=Delete /></td>");
+					$row.append("<td id=edit> <input type=button value=edit /></td>");
+					$row.append("</tr></div>");
 					$(".locations").append($row);
+					registerHandlers(id, cur_location);
 				}
 			}
 
+			function registerHandlers(id, cur_location) {
+				$("#location_" + id + " #view").bind('click', function(event) {
+					geoCode = {};
+					geoCode.lat = cur_location.lat;
+					geoCode.long = cur_location.long;
+					viewLocation(geoCode);	
+				});
+				$("#location_" + id + " #delete").click(function(event) {
+					deleteLocation(id);
+				});
+				$("#location_" + id + " #edit").click(function(event) {
+					createLocation(id);
+				});
+			}
+
 			function deleteLocation(id) {
+				$('.detail_panel').empty();
 				$.ajax({
 				  url: '/location/remove/' + id + '/',
 				  success: function(data) {
@@ -33,8 +53,8 @@
 			}
 
 			function createLocation(id) {
-				operation = id != undefined ? 'update' : 'create';
 				$('.detail_panel').empty();
+				operation = id != undefined ? 'update' : 'create';
 				$addressText = $("<input type=text />");
 				$addressText.attr('value', $('#location_'+id+' #address').text());
 				$nameText = $("<input type=text />");
@@ -70,6 +90,10 @@
 						}
 					});
 				});
+			}
+
+			function viewLocation(id) {
+				$('.detail_panel').empty();
 			}
 		</script>                                                               
 	</head>                                                                 
