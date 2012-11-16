@@ -10,12 +10,7 @@
 		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCmF7jwygYGua_AiL09H47lWdIrY0dkyM4&sensor=false"></script>		
 		<script type="text/javascript">                                         
 			$(document).ready(function() {
-				$.ajax({
-				  url: '/location/show/all/',
-				  success: function(data) {
-					createLocationsView(data)
-				  }
-				});
+				fetchFavoriteLocations();
 				initialize_map();
 			})
 			
@@ -23,9 +18,10 @@
 			var map = null;
 			function initialize_map() {
 				geocoder = new google.maps.Geocoder();
-				var latlng = new google.maps.LatLng(-34.397, 150.644);
+				// Default location of map set to AT&T Park
+				var latlng = new google.maps.LatLng(37.7783, -122.3894);
 				var mapOptions = {
-				  zoom: 8,
+				  zoom: 10,
 				  center: latlng,
 				  mapTypeId: google.maps.MapTypeId.ROADMAP
 				}
@@ -33,17 +29,25 @@
 			}
 			
 
+			function fetchFavoriteLocations() {
+				$.ajax({
+				  url: '/location/show/all/',
+				  success: function(data) {
+					createLocationsView(data)
+				  }
+				});
+			}
 			function createLocationsView(data) {
 				for (var i in data.locations){
 					cur_location = data.locations[i];
 					id = cur_location.location_id 
-					$row = $("<div id=location_" + id + "><tr>");
+					$row = $("<tr id=location_" + id + ">");
 					$row.append("<td id=name>" + cur_location.name +"</td>");
 					$row.append("<td id=address>" + cur_location.address+"</td>");
 					$row.append("<td id=view> <input type=button value=View /></td>");
 					$row.append("<td id=delete> <input type=button value=Delete /></td>");
 					$row.append("<td id=edit> <input type=button value=edit /></td>");
-					$row.append("</tr></div>");
+					$row.append("</tr>");
 					$(".locations").append($row);
 					registerHandlers(id, cur_location);
 				}
@@ -113,7 +117,8 @@
 								data: locationData,
 								type: 'post',
 								success: function(data) {
-								      //window.location.replace("/");
+								    $('.locations').empty();
+                                    fetchFavoriteLocations();
 								}
 							});
 						} else {
@@ -144,12 +149,16 @@
 	<body>                                                                  
 		<div class="list_panel">
 			<table class="locations">
+				<tr>
+					<th> Name </th> 
+					<th> Address </th>
+				<tr>
 			</table>
 			<input type=button value="Add a location" onclick=createLocation() />
 		</div>
 		<div class="detail_panel">
-			<div id="map_canvas">
-			</div>
+		</div>
+		<div id="map_canvas">
 		</div>
 	</body>                                                                 
 </html>
