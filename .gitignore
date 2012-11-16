@@ -30,4 +30,4 @@ pip-log.txt
 *.sw[po]
 
 # sqlite db
-*.db
+fav_locations.db
