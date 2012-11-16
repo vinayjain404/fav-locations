@@ -1,6 +1,13 @@
-<html>                                                                  
+<html>   
+	<style>
+		#map_canvas{
+			width: 450px;
+			height: 480px;
+		}
+	</style>                                                               
 	<head>                                                                  
 		<script type="text/javascript" src="../static/jquery-1.8.2.min.js"></script>          
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCmF7jwygYGua_AiL09H47lWdIrY0dkyM4&sensor=false"></script>		
 		<script type="text/javascript">                                         
 			$(document).ready(function() {
 				$.ajax({
@@ -9,8 +16,23 @@
 					createLocationsView(data)
 				  }
 				});
+				initialize_map();
 			})
 			
+			var geocoder = null;
+			var map = null;
+			function initialize_map() {
+				geocoder = new google.maps.Geocoder();
+				var latlng = new google.maps.LatLng(-34.397, 150.644);
+				var mapOptions = {
+				  zoom: 8,
+				  center: latlng,
+				  mapTypeId: google.maps.MapTypeId.ROADMAP
+				}
+				map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+			}
+			
+
 			function createLocationsView(data) {
 				for (var i in data.locations){
 					cur_location = data.locations[i];
@@ -29,10 +51,7 @@
 
 			function registerHandlers(id, cur_location) {
 				$("#location_" + id + " #view").bind('click', function(event) {
-					geoCode = {};
-					geoCode.lat = cur_location.lat;
-					geoCode.long = cur_location.long;
-					viewLocation(geoCode);	
+					viewLocation(id);	
 				});
 				$("#location_" + id + " #delete").click(function(event) {
 					deleteLocation(id);
@@ -72,21 +91,37 @@
 						return;
 					}
 					
-					locationData = {}
-					locationData.user_id = 'vinayjain404'; 
-					locationData.lat = 100; //geocode.lat;
-					locationData.long = 100;//geocode.long;
-					locationData.address = $addressText.val();
-					locationData.name = $nameText.val();
-					locationData.id = id;
+					geocoder.geocode( { 'address': $addressText.val()}, function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							 map.setCenter(results[0].geometry.location);
+							 var marker = new google.maps.Marker({
+							     map: map,
+							     position: results[0].geometry.location
+							 });
 
-					// fetch geo code and validate address provided
-					$.ajax({
-						url: "/location/" + operation +"/",
-						data: locationData,
-						type: 'post',
-						success: function(data) {
-						      window.location.replace("/show_all_locations");
+							locationData = {}
+							locationData.user_id = 'vinayjain404'; 
+							locationData.lat = results[0].geometry.location.Ya; //geocode.lat;
+							locationData.long = results[0].geometry.location.Za; //geocode.long;
+							locationData.address = $addressText.val();
+							locationData.name = $nameText.val();
+							locationData.id = id;
+
+							// fetch geo code and validate address provided
+							$.ajax({
+								url: "/location/" + operation +"/",
+								data: locationData,
+								type: 'post',
+								success: function(data) {
+								      //window.location.replace("/");
+								}
+							});
+						} else {
+							if(status == 'ZERO_RESULTS') {
+								alert('Please enter a valid address'); 
+							} else {
+								alert("Geocode was not successful for the following reason: " + status);
+							}
 						}
 					});
 				});
@@ -94,6 +129,15 @@
 
 			function viewLocation(id) {
 				$('.detail_panel').empty();
+				geocoder.geocode( { 'address': $('#location_'+id+' #address').text()}, function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						 map.setCenter(results[0].geometry.location);
+						 var marker = new google.maps.Marker({
+						     map: map,
+						     position: results[0].geometry.location
+						 });
+					}
+				});
 			}
 		</script>                                                               
 	</head>                                                                 
@@ -104,6 +148,8 @@
 			<input type=button value="Add a location" onclick=createLocation() />
 		</div>
 		<div class="detail_panel">
+		</div>
+		<div id="map_canvas">
 		</div>
 	</body>                                                                 
 </html>

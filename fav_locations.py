@@ -31,10 +31,6 @@ def teardown_request(exception):
     g.db.close()
 
 @app.route('/')
-def homepage():
-	return render_template('homepage.html')
-	 
-@app.route('/show_all_locations/')
 def display_locations():
 	return render_template('show_locations.html')
 
