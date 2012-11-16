@@ -38,6 +38,12 @@
 				});
 			}
 			function createLocationsView(data) {
+				$headerText = $("<tr>");
+				$headerText.append("<th> Name </th>");
+				$headerText.append("<th> Address </th>");
+				$headerText.append("</tr>");
+				$(".locations").append($headerText);
+
 				for (var i in data.locations){
 					cur_location = data.locations[i];
 					id = cur_location.location_id 
@@ -149,10 +155,6 @@
 	<body>                                                                  
 		<div class="list_panel">
 			<table class="locations">
-				<tr>
-					<th> Name </th> 
-					<th> Address </th>
-				<tr>
 			</table>
 			<input type=button value="Add a location" onclick=createLocation() />
 		</div>
