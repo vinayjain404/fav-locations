@@ -2,17 +2,41 @@ body {
 	font-family: Arial;
 }
 
-table {
-	width: 50%;
+.list_panel table {
+	background-color: #F1F1F1;
+	border: 1px solid;
+	width: 600px;
 }
 
-td, th {
+.list_panel td, th {
 	padding: 5px;
 	text-align: left;
 }
 
 .input_panel {
 	display: none;
+	position: relative;
+	top: 20px;
+}
+
+.input_panel td {
+	font-size: 14px;
+	padding: 5px;
+	width: 210;
+}
+
+td .name, .address {
+	width: 200px;
+}
+
+.input_panel label {
+	width: 100px;
+}
+
+.input_panel table {
+	background-color: #F1F1F1;
+	border: 1px solid;
+	width: 350px;
 }
 
 #map_canvas {
