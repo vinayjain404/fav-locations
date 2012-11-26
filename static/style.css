@@ -2,15 +2,16 @@ body {
 	font-family: Arial;
 }
 
-.list_panel table {
-	background-color: #F1F1F1;
-	border: 1px solid;
-	width: 600px;
-}
-
 .list_panel td, th {
 	padding: 5px;
 	text-align: left;
+}
+
+.list_panel {
+	margin-top : 15px;
+	width: 700px;
+	background-color: #F1F1F1;
+	border: 1px solid;
 }
 
 .input_panel {
@@ -26,6 +27,7 @@ body {
 }
 
 td .name, .address {
+	padding: 4px;
 	width: 200px;
 }
 
@@ -40,8 +42,9 @@ td .name, .address {
 }
 
 #map_canvas {
+	border: 1px solid;
 	position: absolute;
-	left: 60%;
+	right: 100px;
 	top: 15px;
 	width: 450px;
 	height: 480px;
