@@ -11,6 +11,8 @@
 			
 			var geocoder = null;
 			var map = null;
+			var isUpdate = false;
+			var update_location_id = null;
 			function initialize_map() {
 				geocoder = new google.maps.Geocoder();
 
@@ -63,12 +65,12 @@
 					deleteLocation(id);
 				});
 				$("#location_" + id + " #edit").click(function(event) {
-					createLocation(id);
+					updateLocation(id);
 				});
 			}
 
 			function deleteLocation(id) {
-				$('.detail_panel').empty();
+				$(".input_panel").hide();
 				$.ajax({
 				  url: '/location/remove/' + id + '/',
 				  success: function(data) {
@@ -77,69 +79,77 @@
 				});
 			}
 
-			function createLocation(id) {
-				$('.detail_panel').empty();
-				operation = id != undefined ? 'update' : 'create';
-				$addressText = $("<textarea rows=5 cols=20 />");
-				$addressText.attr('value', $('#location_'+id+' #address').text());
-				$nameText = $("<input type=text />");
-				$nameText.attr('value', $('#location_'+id+' #name').text());
-				$createButton = $("<input type=button />");
-				$createButton.attr('value', operation);
-				$(".detail_panel").append($addressText);	
-				$(".detail_panel").append("</br>");
-				$(".detail_panel").append($nameText);
-				$(".detail_panel").append("</br>");
-				$(".detail_panel").append($createButton);
+			function updateLocation(id) {
+				$(".input_panel").show();
+				$(".input_panel .address").val($('#location_'+id+' #address').text());
+				$(".input_panel .name").val($('#location_'+id+' #name').text());
+				isUpdate = true;
+				update_location_id = id;
+			};
 
-				$createButton.click(function() {
-					// validate the name and address
-					if ($nameText.val().length == 0  || $addressText.val().length == 0) {
-						// TODO Append to the error message div
-						alert("Please fill in missing fields name and address");
-						return;
-					}
-					
-					geocoder.geocode( { 'address': $addressText.val()}, function(results, status) {
-						if (status == google.maps.GeocoderStatus.OK) {
-							 map.setCenter(results[0].geometry.location);
-							 var marker = new google.maps.Marker({
-							     map: map,
-							     position: results[0].geometry.location
-							 });
+			function createLocation() {
+				isUpdate = false;
+				clearInputLocationForm();
+				$(".input_panel").show();
+			}
 
-							locationData = {}
-							locationData.user_id = 'vinayjain404'; 
-							locationData.lat = results[0].geometry.location.Ya; //geocode.lat;
-							locationData.long = results[0].geometry.location.Za; //geocode.long;
-							locationData.address = $addressText.val();
-							locationData.name = $nameText.val();
-							locationData.id = id;
+			function submitLocationDetails() {
+				$addressText = $(".input_panel .address");
+				$nameText = $(".input_panel .name");
 
-							// fetch geo code and validate address provided
-							$.ajax({
-								url: "/location/" + operation +"/",
-								data: locationData,
-								type: 'post',
-								success: function(data) {
-									$('.locations').empty();
-									fetchFavoriteLocations();
-								}
-							});
-						} else {
-							if(status == 'ZERO_RESULTS') {
-								alert('Please enter a valid address'); 
-							} else {
-								alert("Geocode was not successful for the following reason: " + status);
-							}
+				// validate the name and address
+				if ($nameText.val().length == 0  || $addressText.val().length == 0) {
+					// TODO Append to the error message div
+					alert("Please fill in missing fields name and address");
+					return;
+				}
+				
+				geocoder.geocode( { 'address': $addressText.val()}, function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						 map.setCenter(results[0].geometry.location);
+						 var marker = new google.maps.Marker({
+						     map: map,
+						     position: results[0].geometry.location
+						 });
+
+						locationData = {}
+						locationData.user_id = 'vinayjain404'; 
+						locationData.lat = results[0].geometry.location.lat();
+						locationData.long = results[0].geometry.location.lng();
+						locationData.address = $addressText.val();
+						locationData.name = $nameText.val();
+						if (isUpdate) {
+							locationData.id = update_location_id;
 						}
-					});
+
+						operation = isUpdate ? 'update' : 'create';
+
+						// fetch geo code and validate address provided
+						$.ajax({
+							url: "/location/" + operation +"/",
+							data: locationData,
+							type: 'post',
+							success: function(data) {
+								$('.locations').empty();
+								fetchFavoriteLocations();
+								clearInputLocationForm();
+								$(".input_panel").hide();
+							}
+						});
+					} else {
+						if(status == 'ZERO_RESULTS') {
+							alert('Please enter a valid address'); 
+						} else {
+							alert("Geocode was not successful for the following reason: " + status);
+						}
+					}
 				});
 			}
 
 			function viewLocation(id) {
 				// show map only on create and update
-				$('.detail_panel').empty();
+				clearInputLocationForm();
+				$(".input_panel").hide();
 				geocoder.geocode( { 'address': $('#location_'+id+' #address').text()}, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
 						 map.setCenter(results[0].geometry.location);
@@ -150,6 +160,10 @@
 					}
 				});
 			}
+			function clearInputLocationForm() {
+				$('.input_panel .address').val("");
+				$('.input_panel .name').val("");
+			}
 		</script>                                                               
 	</head>                                                                 
 	<body>                                                                  
@@ -158,7 +172,18 @@
 			</table>
 			<input type=button value="Add location" onclick=createLocation() />
 		</div>
-		<div class="detail_panel">
+		<div class="input_panel">
+			<table>
+				<tr>
+					<td> <label> Address </label> </td>
+					<td> <textarea class="address" rows=5 cols=20> </textarea>  </td>
+				</tr>
+				<tr>
+					<td> <label> Name </label> </td>
+					<td> <input class="name" type = text/> </td>
+				</tr>
+			</table>
+			<input type=button value="Submit" onclick=submitLocationDetails() />
 		</div>
 		<div id="map_canvas">
 		</div>

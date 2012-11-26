@@ -34,10 +34,6 @@ def teardown_request(exception):
 def display_locations():
 	return render_template('show_locations.html')
 
-@app.route('/create_location/')
-def create_new_location():
-	return render_template('create_location.html')
-
 @app.route('/location/create/', methods = ['POST'])
 def insert_new_location():
 	g.db.execute('insert into locations (user_id, lat, long, address, name) \

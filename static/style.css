@@ -11,6 +11,10 @@ td, th {
 	text-align: left;
 }
 
+.input_panel {
+	display: none;
+}
+
 #map_canvas {
 	position: absolute;
 	left: 60%;
