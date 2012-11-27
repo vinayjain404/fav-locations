@@ -11,6 +11,7 @@ body {
 .list_panel table {
 	border: 1px solid;
 }
+
 .list_panel {
 	margin-top : 15px;
 	width: 700px;
@@ -20,6 +21,7 @@ body {
 .add_location_button {
 	margin-top: 15px;
 }
+
 .input_panel {
 	display: none;
 	position: relative;
