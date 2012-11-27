@@ -14,6 +14,7 @@
 			var isUpdate = false;
 			var update_location_id = null;
 			var username = get_username();
+			var locationMarkers = {};
 
 			function get_username() {
 				// using static username
@@ -71,6 +72,9 @@
 			}
 
 			function deleteLocation(id) {
+				// remove the marker from the map
+				locationMarkers[$('#location_'+id+' #address').text()].setMap(null);
+
 				$(".input_panel").hide();
 				$.ajax({
 				  url: '/location/remove/' + id + '/',
@@ -81,6 +85,9 @@
 			}
 
 			function updateLocation(id) {
+				// remove the marker from the map
+				locationMarkers[$('#location_'+id+' #address').text()].setMap(null);
+
 				$(".input_panel").show();
 				$(".input_panel .address").val($('#location_'+id+' #address').text());
 				$(".input_panel .name").val($('#location_'+id+' #name').text());
@@ -112,6 +119,9 @@
 							map: map,
 							position: results[0].geometry.location
 						});
+						
+						// add marker to the marker list
+						locationMarkers[$addressText.val()] = marker;
 
 						var infowindow = new google.maps.InfoWindow({
 							content: $addressText.val(), 
@@ -161,13 +171,18 @@
 				// show map only on create and update
 				clearInputLocationForm();
 				$(".input_panel").hide();
-				geocoder.geocode( { 'address': $('#location_'+id+' #address').text()}, function(results, status) {
+				address = $('#location_'+id+' #address').text();
+				geocoder.geocode( { 'address': address}, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
 						map.setCenter(results[0].geometry.location);
 						var marker = new google.maps.Marker({
 						    map: map,
 						    position: results[0].geometry.location
 						});
+
+						// add marker to the marker list
+						locationMarkers[address] = marker;
+
 						var infowindow = new google.maps.InfoWindow({
 							content: $('#location_'+id+' #address').text(),
 							size: new google.maps.Size(50, 50)
