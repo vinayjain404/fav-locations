@@ -40,7 +40,7 @@ body {
 	width: 350px;
 }
 
-.name, .address {
+.input_name, .input_address {
 	padding: 4px;
 	width: 200px;
 }
