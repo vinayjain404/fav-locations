@@ -13,6 +13,7 @@
 			var map = null;
 			var isUpdate = false;
 			var update_location_id = null;
+
 			function initialize_map() {
 				geocoder = new google.maps.Geocoder();
 
@@ -35,6 +36,7 @@
 				  }
 				});
 			}
+
 			function createLocationsView(data) {
 				for (var i in data.locations){
 					cur_location = data.locations[i];
