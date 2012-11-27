@@ -71,10 +71,15 @@
 				});
 			}
 
+			function removeMarker(id) {
+				address = $('#location_'+id+' #address').text()
+				if (address in locationMarkers) {
+					// remove the marker from the map if it exists on the map
+					locationMarkers[address].setMap(null);
+				}
+			}
 			function deleteLocation(id) {
-				// remove the marker from the map
-				locationMarkers[$('#location_'+id+' #address').text()].setMap(null);
-
+				removeMarker(id);
 				$(".input_panel").hide();
 				$.ajax({
 				  url: '/location/remove/' + id + '/',
@@ -85,9 +90,7 @@
 			}
 
 			function updateLocation(id) {
-				// remove the marker from the map
-				locationMarkers[$('#location_'+id+' #address').text()].setMap(null);
-
+				removeMarker(id);
 				$(".input_panel").show();
 				$(".input_panel .address").val($('#location_'+id+' #address').text());
 				$(".input_panel .name").val($('#location_'+id+' #name').text());
