@@ -2,6 +2,12 @@ body {
 	font-family: Arial;
 }
 
+.list_panel {
+	margin-top : 15px;
+	padding: 5px;
+	width: 700px;
+}
+
 .list_panel td, th {
 	background-color: #F1F1F1;
 	padding: 5px;
@@ -10,16 +16,6 @@ body {
 
 .list_panel table {
 	border: 1px solid;
-}
-
-.list_panel {
-	margin-top : 15px;
-	width: 700px;
-	padding: 5px;
-}
-
-.add_location_button {
-	margin-top: 15px;
 }
 
 .input_panel {
@@ -34,11 +30,6 @@ body {
 	width: 210;
 }
 
-td .name, .address {
-	padding: 4px;
-	width: 200px;
-}
-
 .input_panel label {
 	width: 100px;
 }
@@ -49,11 +40,21 @@ td .name, .address {
 	width: 350px;
 }
 
+.name, .address {
+	padding: 4px;
+	width: 200px;
+}
+
+
+.add_location_button {
+	margin-top: 15px;
+}
+
 #map_canvas {
 	border: 1px solid;
+	height: 480px;
 	position: absolute;
 	right: 100px;
 	top: 15px;
 	width: 450px;
-	height: 480px;
 }
