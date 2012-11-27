@@ -98,20 +98,30 @@
 					return;
 				}
 				
-				geocoder.geocode( { 'address': $addressText.val()}, function(results, status) {
+				geocoder.geocode( {'address': $addressText.val()}, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
-						 map.setCenter(results[0].geometry.location);
-						 var marker = new google.maps.Marker({
-						     map: map,
-						     position: results[0].geometry.location
-						 });
+						map.setCenter(results[0].geometry.location);
+						var marker = new google.maps.Marker({
+							map: map,
+							position: results[0].geometry.location
+						});
 
-						locationData = {}
+						var infowindow = new google.maps.InfoWindow({
+							content: $addressText.val(), 
+							size: new google.maps.Size(50, 50)
+						});
+
+						google.maps.event.addListener(marker, 'click', function() {
+							infowindow.open(map,marker);
+						});
+
+						locationData = {};
 						locationData.user_id = 'vinayjain404'; 
 						locationData.lat = results[0].geometry.location.lat();
 						locationData.long = results[0].geometry.location.lng();
 						locationData.address = $addressText.val();
 						locationData.name = $nameText.val();
+
 						if (isUpdate) {
 							locationData.id = update_location_id;
 						}
@@ -146,11 +156,19 @@
 				$(".input_panel").hide();
 				geocoder.geocode( { 'address': $('#location_'+id+' #address').text()}, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
-						 map.setCenter(results[0].geometry.location);
-						 var marker = new google.maps.Marker({
-						     map: map,
-						     position: results[0].geometry.location
-						 });
+						map.setCenter(results[0].geometry.location);
+						var marker = new google.maps.Marker({
+						    map: map,
+						    position: results[0].geometry.location
+						});
+						var infowindow = new google.maps.InfoWindow({
+							content: $('#location_'+id+' #address').text(),
+							size: new google.maps.Size(50, 50)
+						});
+
+						google.maps.event.addListener(marker, 'click', function() {
+							infowindow.open(map,marker);
+						});
 					}
 				});
 			}
