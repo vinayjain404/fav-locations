@@ -92,8 +92,8 @@
 			function updateLocation(id) {
 				removeMarker(id);
 				$(".input_panel").show();
-				$(".input_panel .address").val($('#location_'+id+' #address').text());
-				$(".input_panel .name").val($('#location_'+id+' #name').text());
+				$(".input_panel .input_address").val($('#location_'+id+' #address').text());
+				$(".input_panel .input_name").val($('#location_'+id+' #name').text());
 				isUpdate = true;
 				update_location_id = id;
 			};
@@ -105,8 +105,8 @@
 			}
 
 			function submitLocationDetails() {
-				$addressText = $(".input_panel .address");
-				$nameText = $(".input_panel .name");
+				$addressText = $(".input_panel .input_address");
+				$nameText = $(".input_panel .input_name");
 
 				// validate the name and address
 				if ($nameText.val().length == 0  || $addressText.val().length == 0) {
@@ -198,8 +198,8 @@
 				});
 			}
 			function clearInputLocationForm() {
-				$('.input_panel .address').val("");
-				$('.input_panel .name').val("");
+				$('.input_panel .input_address').val("");
+				$('.input_panel .input_name').val("");
 			}
 		</script>                                                               
 	</head>                                                                 
