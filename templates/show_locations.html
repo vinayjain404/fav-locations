@@ -36,12 +36,6 @@
 				});
 			}
 			function createLocationsView(data) {
-				$headerText = $("<tr>");
-				$headerText.append("<td> Name </th>");
-				$headerText.append("<td> Address </th>");
-				$headerText.append("</tr>");
-				$(".locations").append($headerText);
-
 				for (var i in data.locations){
 					cur_location = data.locations[i];
 					id = cur_location.location_id 
