@@ -13,7 +13,12 @@
 			var map = null;
 			var isUpdate = false;
 			var update_location_id = null;
+			var username = get_username();
 
+			function get_username() {
+				// using static username
+				return 'vinayjain404';
+			}
 			function initialize_map() {
 				geocoder = new google.maps.Geocoder();
 
@@ -30,7 +35,7 @@
 
 			function fetchFavoriteLocations() {
 				$.ajax({
-				  url: '/location/show/all/',
+				  url: '/location/show/all/' + username,
 				  success: function(data) {
 					createLocationsView(data)
 				  }
@@ -118,7 +123,7 @@
 						});
 
 						locationData = {};
-						locationData.user_id = 'vinayjain404'; 
+						locationData.user_id = username; 
 						locationData.lat = results[0].geometry.location.lat();
 						locationData.long = results[0].geometry.location.lng();
 						locationData.address = $addressText.val();

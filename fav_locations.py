@@ -46,9 +46,9 @@ def insert_new_location():
 	g.db.commit()
 	return jsonify(message= "location added")
 
-@app.route('/location/show/all/')
-def show_all_locations():
-	cur = g.db.execute('select * from locations')
+@app.route('/location/show/all/<username>/')
+def show_all_locations(username):
+	cur = g.db.execute('select * from locations where user_id = ?', [username])
 	col_names = ['location_id', 'user_id', 'lat', 'long', 'address', 'name']
 	locations = [dict(zip(col_names, row)) for row in cur.fetchall()]	
 	return jsonify(locations=locations)
