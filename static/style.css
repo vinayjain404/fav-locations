@@ -17,6 +17,9 @@ body {
 	padding: 5px;
 }
 
+.add_location_button {
+	margin-top: 15px;
+}
 .input_panel {
 	display: none;
 	position: relative;
