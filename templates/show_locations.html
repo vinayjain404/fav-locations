@@ -44,6 +44,13 @@
 			}
 
 			function createLocationsView(data) {
+				// only display table of locations when there are locations
+				if (data.locations.length == 0) {
+					$(".locations").hide();
+				} else {
+					$(".locations").show();
+				}
+
 				for (var i in data.locations){
 					cur_location = data.locations[i];
 					id = cur_location.location_id 
@@ -85,6 +92,11 @@
 				  url: '/location/remove/' + id + '/',
 				  success: function(data) {
 					$('#location_' + id).remove();
+
+					// only display table of locations when there are locations
+					if($('.locations tr').length == 0) {
+						$('.locations').hide();
+					};
 				  }
 				});
 			}
