@@ -2,6 +2,9 @@ body {
 	font-family: Arial;
 }
 
+.locations {
+	display: none;
+}
 .list_panel {
 	margin-top : 15px;
 	padding: 5px;
