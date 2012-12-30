@@ -2,7 +2,7 @@ fav-locations
 =============
 
 This is a demo app which manages favorite locations for a given user.
-This can be publically accessed at http://bit.ly/Ts6RjD
+This can be publically accessed at http://bit.ly/10ybxbH
 
 This app requires
 - flask http://flask.pocoo.org/
